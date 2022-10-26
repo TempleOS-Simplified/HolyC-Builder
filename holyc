@@ -39,8 +39,9 @@ elif [[ "$#" == 1 ]]; then
 else
     
     printf "\033[33;1mHolyC Builder\033[0m\n"
-    printf "\033[3mA wrapper for xSlendi's RedSeaGen\033[0m\n\n"
+    printf "\033[3mA wrapper for Slendi's RedSeaGen\033[0m\n\n"
     echo "Usage:"
     echo "  holyc --build [directory] [output]"
     echo "  holyc --init"
+    echo "  holyc --run [directory] (REQUIRES INIT TO HAVE BEEN RUN)"
 fi
