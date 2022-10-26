@@ -19,7 +19,7 @@ elif [[ "$#" == 2 ]]; then
             then
                 echo "QEMU Already Running."
             else
-                qemu-system-x86_64 -m 512M -enable-kvm -drive file="virt/temple" -cdrom virt/output.ISO.C > /dev/null 2>&1
+                qemu-system-x86_64 -m 512M -enable-kvm -drive file="virt/temple" -cdrom virt/output.ISO.C > /dev/null 2>&1 & disown
             fi
             
         else
