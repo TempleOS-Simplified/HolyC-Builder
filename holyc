@@ -1,0 +1,4 @@
+#!/bin/bash
+
+printf "\033[33;1m HolyC Builder\033[0m"
+echo "Based on xSlendi's RedSeaGen."
