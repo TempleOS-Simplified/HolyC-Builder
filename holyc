@@ -10,6 +10,7 @@ if [[ "$#" == 3 ]]; then
         echo "Usage:"
         echo "  holyc --build [directory] [output]"
         echo "  holyc --init"
+        echo "  holyc --run [directory] (REQUIRES INIT TO HAVE BEEN RUN)"
     fi
 elif [[ "$#" == 2 ]]; then
     if [[ "$1" = "--run" ]]; then
