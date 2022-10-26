@@ -15,7 +15,13 @@ elif [[ "$#" == 2 ]]; then
     if [[ "$1" = "--run" ]]; then
         if [ -d "virt" ]; then
             /usr/local/lib/redseagen $2 virt/output.ISO.C
-            qemu-system-x86_64 -m 512M -enable-kvm -drive file="virt/temple" -cdrom virt/output.ISO.C > /dev/null 2>&1 & disown
+            if pgrep -x "qemu-system-x86" > /dev/null
+            then
+                echo "QEMU Already Running."
+            else
+                qemu-system-x86_64 -m 512M -enable-kvm -drive file="virt/temple" -cdrom virt/output.ISO.C > /dev/null 2>&1
+            fi
+            
         else
             echo "No 'virt' directory found. Try running --init"
         fi
