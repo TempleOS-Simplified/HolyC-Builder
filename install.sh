@@ -19,7 +19,7 @@ sudo chmod a+x redseagen
 sudo cp redseagen $LIBINSTALL
 
 # TempleOS // For Virt
-sudo cp templeos.iso /usr/local/lib/templeos.iso
+sudo cp temple /usr/local/lib/temple
 echo "Finished               "
 fi
 
