@@ -20,7 +20,7 @@ elif [[ "$#" == 2 ]]; then
             then
                 echo "QEMU Already Running."
             else
-                qemu-system-x86_64 -m 512M -enable-kvm -drive file="virt/temple" -cdrom virt/output.ISO.C > /dev/null 2>&1 & disown
+                qemu-system-x86_64 -m 1024M -smp $(( $(nproc) / 2 )) -enable-kvm -drive file="virt/temple" -cdrom virt/output.ISO.C > /dev/null 2>&1 & disown
             fi
             
         else
@@ -34,7 +34,7 @@ elif [[ "$#" == 1 ]]; then
         mkdir virt
         qemu-img create -f qcow2 virt/temple 2G
         echo "PRESS 'Y' TWICE THEN A KEY. WHEN ASKED TO REBOOT, PRESS N, AND MANUALLY QUIT"
-        qemu-system-x86_64 -m 512M -enable-kvm -drive file="virt/temple" -cdrom /usr/local/lib/templeos.iso -boot order=d > /dev/null 2>&1
+        qemu-system-x86_64 -m 1024M -smp $(( $(nproc) / 2 )) -enable-kvm -drive file="virt/temple" -cdrom /usr/local/lib/templeos.iso -boot order=d > /dev/null 2>&1
         echo "Virtual machine created. You may now use --run"
     fi
 else
