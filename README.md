@@ -53,5 +53,5 @@ For Windows, instead use [RedSeaExplorer](https://git.checksum.fail/doodguy/RedS
     This created a TempleOS ISO.C file similar to those of supplementals. You can now mount this in VMWare or QEMU; in fact, HolyC Builder is able to automate this with `--run`.
 
 ## Video
-For a more indepth explanation, check out my video which explores more features.
-<iframe width="1280" height="720" src="https://www.youtube.com/embed/kr7jU_3RI4k" title="Writing HolyC code outside TempleOS ... And importing it." frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+For a more indepth explanation, check out my video which explores more features:
+https://youtu.be/kr7jU_3RI4k
