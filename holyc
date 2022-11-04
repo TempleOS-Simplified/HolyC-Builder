@@ -1,46 +1,81 @@
-#!/bin/bash
-export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+#!/bin/env python
 
-if [[ "$#" == 3 ]]; then
-    if [[ "$1" = "--build" ]]; then
-        /usr/local/lib/redseagen $2 $3
-    else
-        printf "\033[33;1mHolyC Builder\033[0m\n"
-        printf "\033[3mA wrapper for Slendi's RedSeaGen\033[0m\n\n"
-        echo "Usage:"
-        echo "  holyc --build [directory] [output]"
-        echo "  holyc --init"
-        echo "  holyc --run [directory] (REQUIRES INIT TO HAVE BEEN RUN)"
-    fi
-elif [[ "$#" == 2 ]]; then
-    if [[ "$1" = "--run" ]]; then
-        if [ -d "virt" ]; then
-            /usr/local/lib/redseagen $2 virt/output.ISO.C
-            if pgrep -x "qemu-system-x86" > /dev/null
-            then
-                echo "QEMU Already Running."
-            else
-                qemu-system-x86_64 -m 1024M -smp $(( $(nproc) / 2 )) -enable-kvm -drive file="virt/temple" -cdrom virt/output.ISO.C > /dev/null 2>&1 & disown
-            fi
-            
-        else
-            echo "No 'virt' directory found. Try running --init"
-        fi
-    fi
+import subprocess, os, sys, time
+# THESE CAN BE CHANGED!!!
+# The following variables can be changed if they don't comply with your system.
+# An example would be the bootwait variable. If your PC doesn't boot into TempleOS as fast, then change it to a higher value.
 
-elif [[ "$#" == 1 ]]; then
-    if [[ "$1" = "--init" ]]; then
-        echo "Copying over virtual machine files."
-        mkdir virt
-        cp /usr/local/lib/temple virt/temple
-        echo "Virtual machine created. You may now use --run"
-    fi
-else
+BOOTWAIT = 1
+RUNWAIT = 2
+
+# Help Command
+def help():
+    print("\033[33;1mHolyC Builder\033[0m\n\033[3mA wrapper for Slendi's RedSeaGen\033[0m\n\nUsage:\n   holyc build [dir] [out]\n   holyc init\n   holyc run [dir] (mainHC)")
+
+# command parsing
+def cmd(c):
+    subprocess.run(c, shell=True, env=dict(os.environ, DOTNET_SYSTEM_GLOBALIZATION_INVARIANT="1"))
+# Handling
+
+if len(sys.argv) < 2:
+    help()
+
+## Build Logic
+elif sys.argv[1] == "build":
+    try:
+        cmd(f'/usr/local/lib/redseagen {sys.argv[2]} {sys.argv[3]}')
+    except IndexError:
+        print("You have supplied insufficient arguments. Try your command again or check the help command.")
+
+## Init Logic
+elif sys.argv[1] == "init":
+    if os.path.exists('virt') == True:
+
+        print('A virtual machine already exists in this directory. Running this command again will reset the VM. To proceed, delete the virt directory first.')
+        sys.exit()
     
-    printf "\033[33;1mHolyC Builder\033[0m\n"
-    printf "\033[3mA wrapper for Slendi's RedSeaGen\033[0m\n\n"
-    echo "Usage:"
-    echo "  holyc --build [directory] [output]"
-    echo "  holyc --init"
-    echo "  holyc --run [directory] (REQUIRES INIT TO HAVE BEEN RUN)"
-fi
+    print("Copying required files over...")
+    os.mkdir('virt')
+    cmd('cp /usr/local/lib/temple virt/temple')
+    print('VM created! You may now use "run".')
+
+## Run Logic
+elif sys.argv[1] == "run":
+    print(len(sys.argv))
+    if len(sys.argv) < 4:
+        file = ''
+    else:
+        passed = True
+        file = sys.argv[3]
+    
+    print("---QEMU OUTPUT---")
+
+    cmd(f"/usr/local/lib/redseagen {sys.argv[2]} virt/output.ISO.C")
+    print("File Wrote.")
+    isRunning = os.popen('pgrep -x "qemu-system-x86"').read().split("\n")[0]
+    if isRunning != "":
+        print('QEMU is already running. Refreshing..')
+
+
+    else:
+        print("Starting QEMU")
+        cmd("qemu-system-x86_64 -monitor tcp:127.0.0.1:1234,server,nowait -m 1024M -smp $(( $(nproc) / 2 )) -enable-kvm -drive file='virt/temple' -cdrom virt/output.ISO.C > /dev/null 2>&1 & disown")
+        time.sleep(BOOTWAIT)
+        cmd('echo "sendkey 1" | ncat 127.0.0.1 1234')
+        time.sleep(RUNWAIT)
+        
+        newinp = '-'.join(file)
+        result = ""
+        cmd(f'echo "sendkey r-u-n-dot" | ncat 127.0.0.1 1234')
+        for i in newinp:
+            if i.isupper() == True:
+                result = result + "shift-" + i.lower()
+                result.removeprefix('-')
+
+                cmd(f'echo "sendkey {result}" | ncat 127.0.0.1 1234')
+                result=""
+            else:
+                result = result.removeprefix('-') + i.lower()
+        cmd(f'echo "sendkey {result}" | ncat 127.0.0.1 1234')
+        cmd(f'echo "sendkey kp_enter" | ncat 127.0.0.1 1234')
+
