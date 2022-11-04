@@ -17,6 +17,22 @@ def cmd(c):
     subprocess.run(c, shell=True, env=dict(os.environ, DOTNET_SYSTEM_GLOBALIZATION_INVARIANT="1"))
 # Handling
 
+def run(filex):
+    newinp = '-'.join(filex)
+    result = ""
+    cmd(f'echo "sendkey r-u-n-dot" | ncat 127.0.0.1 1234')
+    for i in newinp:
+        if i.isupper() == True:
+            result = result + "shift-" + i.lower()
+            result.removeprefix('-')
+
+            cmd(f'echo "sendkey {result}" | ncat 127.0.0.1 1234')
+            result=""
+        else:
+            result = result.removeprefix('-') + i.lower()
+    cmd(f'echo "sendkey {result}" | ncat 127.0.0.1 1234')
+    cmd(f'echo "sendkey kp_enter" | ncat 127.0.0.1 1234')
+
 if len(sys.argv) < 2:
     help()
 
@@ -55,7 +71,9 @@ elif sys.argv[1] == "run":
     isRunning = os.popen('pgrep -x "qemu-system-x86"').read().split("\n")[0]
     if isRunning != "":
         print('QEMU is already running. Refreshing..')
-
+        time.sleep(RUNWAIT)
+        
+        run(file)
 
     else:
         print("Starting QEMU")
@@ -64,19 +82,5 @@ elif sys.argv[1] == "run":
         cmd('echo "sendkey 1" | ncat 127.0.0.1 1234')
         time.sleep(RUNWAIT)
         
-    newinp = '-'.join(file)
-    result = ""
-    cmd(f'echo "sendkey r-u-n-dot" | ncat 127.0.0.1 1234')
-    for i in newinp:
-        if i.isupper() == True:
-            result = result + "shift-" + i.lower()
-            result.removeprefix('-')
-            cmd(f'echo "sendkey {result}" | ncat 127.0.0.1 1234')
-            result=""
-        else:
-            result = result.removeprefix('-') + i.lower()
-
-            cmd(f'echo "sendkey {result}" | ncat 127.0.0.1 1234')
-            
-    cmd(f'echo "sendkey kp_enter" | ncat 127.0.0.1 1234')
+        run(file)
 
