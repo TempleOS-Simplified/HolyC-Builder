@@ -20,8 +20,9 @@ For Windows, instead use [RedSeaExplorer](https://git.checksum.fail/doodguy/RedS
 
 ## Prerequisites
 * Bash
-* QEMU
-* Git (Optional)
+* Python 3.x
+* QEMU (with GUI)
+* Git
 
 ## Installation
 1. Clone the repository (or download the ZIP):
