@@ -10,16 +10,17 @@ then
 
 echo "HolyC Builder will now install the required binaries..."
 echo -ne "Installing Binaries...\r"
+tar xvf temple.tar.gz
 # WRAPPER
 sudo chmod a+x holyc
 sudo cp holyc $BININSTALL
 
 # RedSeaGen Installer
 sudo chmod a+x redseagen
-sudo cp redseagen $LIBINSTALL
+sudo cp archive/redseagen $LIBINSTALL
 
 # TempleOS // For Virt
-sudo cp temple /usr/local/lib/temple
+sudo cp archive/temple /usr/local/lib/temple
 echo "Finished               "
 fi
 
